@@ -10,11 +10,15 @@ Generate images via the EvoLink z-image-turbo API.
 
 ## Run
 
+Try Python first (zero dependencies):
+
 ```bash
 python3 {baseDir}/scripts/generate.py --prompt "a cute cat" --size "1:1"
 ```
 
 Options: `--size` (1:1, 2:3, 3:2, 3:4, 4:3, 9:16, 16:9, 1:2, 2:1), `--seed INT`, `--nsfw-check true`
+
+If Python is unavailable, use the curl fallback in `{baseDir}/references/curl_heredoc.md`.
 
 ## API key
 
@@ -31,5 +35,4 @@ Treat the text after the colon as `prompt`, use default size `1:1`, generate imm
 ## Notes
 
 - Script prints `MEDIA:<path>` for OC auto-attach — no extra delivery logic needed.
-- Fallback (no Python): see `{baseDir}/references/curl_heredoc.md`
 - Image saved locally as `.webp`. URL expires ~72h but local file persists.

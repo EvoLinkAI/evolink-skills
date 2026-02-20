@@ -72,7 +72,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--seed", type=int, default=None, help="Optional seed for reproducibility.")
     parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.webp).")
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between polls.")
-    parser.add_argument("--max-retries", type=int, default=200, help="Max polling attempts.")
+    parser.add_argument("--max-retries", type=int, default=60, help="Max polling attempts.")
     parser.add_argument("--verbose", action="store_true", help="Print task id and per-poll status (debug).")
     args = parser.parse_args(argv)
 

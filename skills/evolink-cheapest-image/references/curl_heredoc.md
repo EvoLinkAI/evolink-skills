@@ -31,7 +31,7 @@ if [ -z "$TASK_ID" ]; then
   exit 1
 fi
 
-MAX_RETRIES=200
+MAX_RETRIES=60
 for i in $(seq 1 $MAX_RETRIES); do
   sleep 10
   TASK=$(curl -s "https://api.evolink.ai/v1/tasks/$TASK_ID" \
@@ -41,7 +41,7 @@ for i in $(seq 1 $MAX_RETRIES); do
   if [ "$STATUS" = "completed" ]; then
     URL=$(echo "$TASK" | grep -o '"results":\\["[^"]*"\\]' | grep -o 'https://[^"]*')
     curl -s -o "$OUT_FILE" "$URL"
-    echo "MEDIA:$(pwd)/$OUT_FILE"
+    echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
     break
   fi
   if [ "$STATUS" = "failed" ]; then
@@ -60,5 +60,5 @@ If you only have a URL and no file yet, download it immediately (URL expires in 
 ```bash
 OUT_FILE="evolink-result.webp"
 curl -L -o "$OUT_FILE" "<URL>"
-echo "MEDIA:$(pwd)/$OUT_FILE"
+echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
 ```
