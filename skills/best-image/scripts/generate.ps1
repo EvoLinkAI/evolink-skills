@@ -13,7 +13,7 @@ param(
     [string[]]$ImageUrls,
     [string]$Out,
     [int]$PollSeconds = 10,
-    [int]$MaxRetries = 60,
+    [int]$MaxRetries = 72,
     [switch]$Verbose_
 )
 
@@ -57,7 +57,7 @@ if ($ImageUrls) {
     $body["image_urls"] = @($ImageUrls)
 }
 
-$jsonBody = $body | ConvertTo-Json -Compress
+$jsonBody = $body | ConvertTo-Json -Compress -Depth 5
 
 try {
     $resp = Invoke-RestMethod -Uri "$apiBase/images/generations" -Method POST -Headers $headers -Body $jsonBody -ContentType "application/json" -TimeoutSec 60

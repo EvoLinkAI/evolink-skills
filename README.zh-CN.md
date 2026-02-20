@@ -8,6 +8,7 @@
 
 ```bash
 clawhub install cheapest-image
+clawhub install best-image
 ```
 
 ## 配置

@@ -13,7 +13,7 @@ param(
     [Nullable[int]]$Seed,
     [string]$Out,
     [int]$PollSeconds = 10,
-    [int]$MaxRetries = 60,
+    [int]$MaxRetries = 72,
     [switch]$Verbose_
 )
 

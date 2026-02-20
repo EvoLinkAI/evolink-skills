@@ -72,7 +72,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--image-urls", nargs="*", default=None, help="Reference image URLs for image-to-image/editing (max 10, each ≤10MB).")
     parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.webp).")
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between polls.")
-    parser.add_argument("--max-retries", type=int, default=60, help="Max polling attempts.")
+    parser.add_argument("--max-retries", type=int, default=72, help="Max polling attempts.")
     parser.add_argument("--verbose", action="store_true", help="Print task id and per-poll status (debug).")
     args = parser.parse_args(argv)
 

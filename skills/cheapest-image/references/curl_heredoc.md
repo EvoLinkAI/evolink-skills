@@ -33,7 +33,7 @@ if [ -z "$TASK_ID" ]; then
   exit 1
 fi
 
-MAX_RETRIES=60
+MAX_RETRIES=72
 for i in $(seq 1 $MAX_RETRIES); do
   sleep 10
   TASK=$(curl -s "https://api.evolink.ai/v1/tasks/$TASK_ID" \

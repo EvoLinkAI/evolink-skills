@@ -8,6 +8,7 @@ Works with [OpenClaw](https://github.com/openclaw/openclaw), [Claude  Code](http
 
 ```bash
 clawhub install cheapest-image
+clawhub install best-image
 ```
 
 Or clone and copy:
@@ -15,6 +16,7 @@ Or clone and copy:
 ```bash
 git clone https://github.com/EvoLinkAI/evolink-skills.git
 cp -r evolink-skills/skills/cheapest-image ~/.openclaw/skills/
+cp -r evolink-skills/skills/best-image ~/.openclaw/skills/
 ```
 
 ## API Key
