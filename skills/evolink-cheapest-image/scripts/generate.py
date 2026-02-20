@@ -85,7 +85,7 @@ def main(argv: list[str]) -> int:
         print("Error: prompt exceeds 2000 characters.", file=sys.stderr)
         return 2
 
-    out_file = args.out or _default_out_file()
+    out_file = os.path.abspath(args.out or _default_out_file())
 
     payload = {
         "model": "z-image-turbo",
@@ -121,7 +121,7 @@ def main(argv: list[str]) -> int:
                 print(f"Image URL: {url}")
                 print(f"Downloaded to: {out_file}")
             else:
-                print(out_file)
+                print(f"MEDIA:{out_file}")
             return 0
 
         if status == "failed":

@@ -41,6 +41,7 @@ for i in $(seq 1 $MAX_RETRIES); do
   if [ "$STATUS" = "completed" ]; then
     URL=$(echo "$TASK" | grep -o '"results":\\["[^"]*"\\]' | grep -o 'https://[^"]*')
     curl -s -o "$OUT_FILE" "$URL"
+    echo "MEDIA:$(pwd)/$OUT_FILE"
     break
   fi
   if [ "$STATUS" = "failed" ]; then
@@ -57,10 +58,7 @@ fi
 If you only have a URL and no file yet, download it immediately (URL expires in ~72 hours):
 
 ```bash
-curl -L -o evolink-result.webp "<URL>"
+OUT_FILE="evolink-result.webp"
+curl -L -o "$OUT_FILE" "<URL>"
+echo "MEDIA:$(pwd)/$OUT_FILE"
 ```
-
-For OpenClaw usage:
-
-- `read` only previews the image in this chat.
-- Send/upload the downloaded `.webp` to the user via the OpenClaw message action using its `filePath` parameter (do not only paste the URL).

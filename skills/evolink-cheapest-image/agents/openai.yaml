@@ -1,4 +1,0 @@
-interface:
-  display_name: "Evolink Z-Image"
-  short_description: "Generate & send images via Evolink"
-  default_prompt: "Use $evolink-z-image. 生图：一只可爱的猫咪 / generate a picture: a cute cat"
