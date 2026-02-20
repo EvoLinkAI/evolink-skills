@@ -55,7 +55,7 @@ def _download(url: str, out_file: str, timeout_s: int = 120):
 
 
 def _default_out_file():
-    ts = _dt.datetime.now().strftime("%Y%m%d-%H%M%S")
+    ts = _dt.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     return f"evolink-{ts}.webp"
 
 

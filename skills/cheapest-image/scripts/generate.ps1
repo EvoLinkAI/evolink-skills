@@ -30,7 +30,7 @@ if ($Prompt.Length -gt 2000) {
 }
 
 if (-not $Out) {
-    $ts = Get-Date -Format "yyyyMMdd-HHmmss"
+    $ts = Get-Date -Format "yyyyMMdd-HHmmss-fff"
     $Out = "evolink-$ts.webp"
 }
 $Out = [System.IO.Path]::GetFullPath($Out)
