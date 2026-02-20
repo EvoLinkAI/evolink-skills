@@ -20,9 +20,9 @@ export EVOLINK_API_KEY="your-key"
 
 ## 可用 Skills
 
-| Skill | 功能 |
-|-------|------|
-| [evolink-cheapest-image](skills/evolink-cheapest-image/) | 可能是最便宜的 AI 生图 |
+| Skill | 功能 | 价格 |
+|-------|------|------|
+| [evolink-cheapest-image](skills/evolink-cheapest-image/) | 可能是最便宜的 AI 生图 | ~¥0.026/张 |
 
 更多 Skill 即将推出——视频、音乐、多模型路由。
 

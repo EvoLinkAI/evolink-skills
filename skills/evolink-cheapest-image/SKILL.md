@@ -1,7 +1,7 @@
 ---
 name: evolink-cheapest-image
-description: Possibly the cheapest AI image generation. Text-to-image via the EvoLink API.
-metadata: {"openclaw": {"emoji": "🖼️", "requires": {"bins": ["python3"], "env": ["EVOLINK_API_KEY"]}, "primaryEnv": "EVOLINK_API_KEY"}}
+description: Possibly the cheapest AI image generation (~$0.0036/image). Text-to-image via the EvoLink API.
+metadata: {"openclaw": {"emoji": "🖼️", "requires": {"env": ["EVOLINK_API_KEY"]}, "primaryEnv": "EVOLINK_API_KEY"}}
 ---
 
 # EvoLink Cheapest Image
