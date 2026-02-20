@@ -7,14 +7,14 @@ Works with [OpenClaw](https://github.com/openclaw/openclaw), [Claude  Code](http
 ## Install
 
 ```bash
-clawhub install evolink-cheapest-image
+clawhub install cheapest-image
 ```
 
 Or clone and copy:
 
 ```bash
 git clone https://github.com/EvoLinkAI/evolink-skills.git
-cp -r evolink-skills/skills/evolink-cheapest-image ~/.openclaw/skills/
+cp -r evolink-skills/skills/cheapest-image ~/.openclaw/skills/
 ```
 
 ## API Key
@@ -29,7 +29,7 @@ export EVOLINK_API_KEY="your-key"
 
 | Skill | What it does | Price |
 |-------|-------------|-------|
-| [evolink-cheapest-image](skills/evolink-cheapest-image/) | Possibly the cheapest image generation — text-to-image via EvoLink API | ~$0.0036/image |
+| [cheapest-image](skills/cheapest-image/) | Possibly the cheapest image generation — text-to-image via EvoLink API | ~$0.0036/image |
 
 More skills coming soon — video, music, multi-model routing.
 
