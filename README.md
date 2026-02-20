@@ -30,6 +30,7 @@ export EVOLINK_API_KEY="your-key"
 | Skill | What it does | Price |
 |-------|-------------|-------|
 | [cheapest-image](skills/cheapest-image/) | Possibly the cheapest image generation — text-to-image via EvoLink API | ~$0.0036/image |
+| [best-image](skills/best-image/) | Best quality image generation — text-to-image, image-to-image, editing via EvoLink API | ~$0.12-0.20/image |
 
 More skills coming soon — video, music, multi-model routing.
 
