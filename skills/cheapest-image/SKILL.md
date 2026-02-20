@@ -1,6 +1,7 @@
 ---
 name: cheapest-image
 description: Possibly the cheapest AI image generation (~$0.0036/image). Text-to-image via the EvoLink API.
+homepage: https://evolink.ai
 metadata: {"openclaw": {"emoji": "🖼️", "requires": {"env": ["EVOLINK_API_KEY"]}, "primaryEnv": "EVOLINK_API_KEY"}}
 ---
 
@@ -10,7 +11,7 @@ Generate images via the EvoLink z-image-turbo API.
 
 ## Run
 
-Try Python first (zero dependencies):
+Try Python first (zero dependencies, all platforms):
 
 ```bash
 python3 {baseDir}/scripts/generate.py --prompt "a cute cat" --size "1:1"
@@ -18,7 +19,10 @@ python3 {baseDir}/scripts/generate.py --prompt "a cute cat" --size "1:1"
 
 Options: `--size` (1:1, 2:3, 3:2, 3:4, 4:3, 9:16, 16:9, 1:2, 2:1), `--seed INT`, `--nsfw-check true`
 
-If Python is unavailable, use the curl fallback in `{baseDir}/references/curl_heredoc.md`.
+If Python is unavailable:
+
+- **Windows**: `powershell -File {baseDir}/scripts/generate.ps1 -Prompt "a cute cat" -Size "1:1"`
+- **Unix/macOS**: use the curl fallback in `{baseDir}/references/curl_heredoc.md`
 
 ## API key
 

@@ -120,8 +120,7 @@ def main(argv: list[str]) -> int:
             if args.verbose:
                 print(f"Image URL: {url}")
                 print(f"Downloaded to: {out_file}")
-            else:
-                print(f"MEDIA:{out_file}")
+            print(f"MEDIA:{out_file}")
             return 0
 
         if status == "failed":
