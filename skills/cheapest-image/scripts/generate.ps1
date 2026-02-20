@@ -52,7 +52,7 @@ if ($null -ne $Seed) {
     $body["seed"] = $Seed
 }
 
-$jsonBody = $body | ConvertTo-Json -Compress
+$jsonBody = $body | ConvertTo-Json -Compress -Depth 5
 
 try {
     $resp = Invoke-RestMethod -Uri "$apiBase/images/generations" -Method POST -Headers $headers -Body $jsonBody -ContentType "application/json" -TimeoutSec 60

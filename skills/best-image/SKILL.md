@@ -41,6 +41,6 @@ For image-to-image or editing, the user provides image URLs alongside the prompt
 ## Notes
 
 - Script prints `MEDIA:<path>` for OC auto-attach — no extra delivery logic needed.
-- Image saved locally as `.webp`. URL expires ~24h but local file persists.
+- Image saved locally (format auto-detected from URL: png/jpg/webp). URL expires ~24h but local file persists.
 - `--quality 4K` incurs additional charges.
 - `--image-urls` accepts up to 10 URLs (each image ≤10MB, formats: jpeg/jpg/png/webp).

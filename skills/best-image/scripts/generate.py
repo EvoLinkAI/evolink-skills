@@ -5,10 +5,12 @@ import argparse
 import datetime as _dt
 import json
 import os
+import posixpath
 import sys
 import time
 import urllib.error
 import urllib.request
+from urllib.parse import urlparse
 
 
 API_BASE = "https://api.evolink.ai/v1"
@@ -54,9 +56,15 @@ def _download(url: str, out_file: str, timeout_s: int = 120):
         f.write(content)
 
 
-def _default_out_file():
+def _default_out_file(ext: str = ".png"):
     ts = _dt.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-    return f"evolink-{ts}.webp"
+    return f"evolink-{ts}{ext}"
+
+
+def _ext_from_url(url: str) -> str:
+    path = urlparse(url).path
+    _, ext = posixpath.splitext(path)
+    return ext.lower() if ext in (".png", ".jpg", ".jpeg", ".webp") else ".png"
 
 
 def main(argv: list[str]) -> int:
@@ -66,11 +74,11 @@ def main(argv: list[str]) -> int:
         default=os.getenv("EVOLINK_API_KEY", ""),
         help="Evolink API key (or set EVOLINK_API_KEY).",
     )
-    parser.add_argument("--prompt", required=True, help="Image prompt (max 2000 tokens).")
+    parser.add_argument("--prompt", required=True, help="Image prompt (max 2000 tokens, validated server-side).")
     parser.add_argument("--size", default="auto", help="Aspect ratio (e.g. auto, 1:1, 9:16, 21:9).")
     parser.add_argument("--quality", default="2K", choices=["1K", "2K", "4K"], help="Image quality (4K costs extra).")
     parser.add_argument("--image-urls", nargs="*", default=None, help="Reference image URLs for image-to-image/editing (max 10, each ≤10MB).")
-    parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.webp).")
+    parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.<ext>).")
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between polls.")
     parser.add_argument("--max-retries", type=int, default=72, help="Max polling attempts.")
     parser.add_argument("--verbose", action="store_true", help="Print task id and per-poll status (debug).")
@@ -81,15 +89,11 @@ def main(argv: list[str]) -> int:
         print("Error: EVOLINK_API_KEY not set and --api-key not provided.", file=sys.stderr)
         return 2
 
-    if len(args.prompt) > 2000:
-        print("Error: prompt exceeds 2000 characters.", file=sys.stderr)
-        return 2
-
     if args.image_urls and len(args.image_urls) > 10:
         print("Error: maximum 10 image URLs allowed.", file=sys.stderr)
         return 2
 
-    out_file = os.path.abspath(args.out or _default_out_file())
+    out_file = os.path.abspath(args.out) if args.out else None
 
     payload = {
         "model": "gemini-3-pro-image-preview",
@@ -120,6 +124,9 @@ def main(argv: list[str]) -> int:
             if not results:
                 raise RuntimeError(f"Task completed but no results field found: {task}")
             url = results[0]
+            ext = _ext_from_url(url)
+            if not args.out:
+                out_file = os.path.abspath(_default_out_file(ext))
             _download(url, out_file=out_file)
             if args.verbose:
                 print(f"Image URL: {url}")

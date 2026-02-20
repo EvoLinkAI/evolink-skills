@@ -24,21 +24,14 @@ if (-not $ApiKey) {
     exit 2
 }
 
-if ($Prompt.Length -gt 2000) {
-    Write-Error "Prompt exceeds 2000 characters."
-    exit 2
-}
-
 if ($ImageUrls -and $ImageUrls.Count -gt 10) {
     Write-Error "Maximum 10 image URLs allowed."
     exit 2
 }
 
-if (-not $Out) {
-    $ts = Get-Date -Format "yyyyMMdd-HHmmss-fff"
-    $Out = "evolink-$ts.webp"
+if ($Out) {
+    $Out = [System.IO.Path]::GetFullPath($Out)
 }
-$Out = [System.IO.Path]::GetFullPath($Out)
 
 $apiBase = "https://api.evolink.ai/v1"
 $headers = @{
@@ -97,6 +90,15 @@ for ($i = 1; $i -le $MaxRetries; $i++) {
             exit 1
         }
         $url = $results[0]
+
+        # Infer extension from URL
+        if (-not $Out) {
+            $urlPath = ([System.Uri]$url).AbsolutePath
+            $ext = [System.IO.Path]::GetExtension($urlPath).ToLower()
+            if ($ext -notin ".png", ".jpg", ".jpeg", ".webp") { $ext = ".png" }
+            $ts = Get-Date -Format "yyyyMMdd-HHmmss-fff"
+            $Out = [System.IO.Path]::GetFullPath("evolink-$ts$ext")
+        }
 
         try {
             Invoke-WebRequest -Uri $url -OutFile $Out -TimeoutSec 120 -UserAgent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
