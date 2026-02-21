@@ -1,7 +1,5 @@
 # curl + heredoc (Unix/macOS only, no dependencies)
 
-> **Note**: This uses bash heredoc syntax which does not work on Windows (cmd/PowerShell). For Windows without Python, see `references/powershell.md` instead.
-
 Run in a single shell call (avoid relying on exported variables persisting across tool calls).
 
 Replace:

@@ -1,3 +1,12 @@
+# Python reference (all platforms, zero dependencies)
+
+> Requires Python 3.6+. Uses only stdlib (`urllib`, `json`, `time`).
+
+Save the script below as `generate.py` and run with `python3 generate.py --prompt "a cute cat" --size "auto"`.
+
+Options: `--size` (auto, 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9), `--quality` (1K, 2K, 4K), `--image-urls URL1 URL2 ...`
+
+```python
 #!/usr/bin/env python3
 from __future__ import annotations
 
@@ -56,7 +65,7 @@ def _download(url: str, out_file: str, timeout_s: int = 120):
         f.write(content)
 
 
-def _default_out_file(ext: str = ".webp"):
+def _default_out_file(ext: str = ".png"):
     ts = _dt.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
     return f"evolink-{ts}{ext}"
 
@@ -64,20 +73,20 @@ def _default_out_file(ext: str = ".webp"):
 def _ext_from_url(url: str) -> str:
     path = urlparse(url).path
     _, ext = posixpath.splitext(path)
-    return ext.lower() if ext in (".png", ".jpg", ".jpeg", ".webp") else ".webp"
+    return ext.lower() if ext in (".png", ".jpg", ".jpeg", ".webp") else ".png"
 
 
 def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(description="Generate an image via Evolink Z-Image-Turbo.")
+    parser = argparse.ArgumentParser(description="Generate an image via Evolink Nano Banana Pro.")
     parser.add_argument(
         "--api-key",
         default=os.getenv("EVOLINK_API_KEY", ""),
         help="Evolink API key (or set EVOLINK_API_KEY).",
     )
-    parser.add_argument("--prompt", required=True, help="Image prompt (max 2000 chars recommended).")
-    parser.add_argument("--size", default="1:1", help="Aspect ratio (e.g. 1:1, 9:16) or custom WxH.")
-    parser.add_argument("--nsfw-check", default="false", choices=["true", "false"], help="Stricter NSFW filtering.")
-    parser.add_argument("--seed", type=int, default=None, help="Optional seed for reproducibility.")
+    parser.add_argument("--prompt", required=True, help="Image prompt (max 2000 tokens, validated server-side).")
+    parser.add_argument("--size", default="auto", help="Aspect ratio (e.g. auto, 1:1, 9:16, 21:9).")
+    parser.add_argument("--quality", default="2K", choices=["1K", "2K", "4K"], help="Image quality (4K costs extra).")
+    parser.add_argument("--image-urls", nargs="*", default=None, help="Reference image URLs for image-to-image/editing (max 10, each ≤10MB).")
     parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.<ext>).")
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between polls.")
     parser.add_argument("--max-retries", type=int, default=72, help="Max polling attempts.")
@@ -89,20 +98,20 @@ def main(argv: list[str]) -> int:
         print("Error: EVOLINK_API_KEY not set and --api-key not provided.", file=sys.stderr)
         return 2
 
-    if len(args.prompt) > 2000:
-        print("Error: prompt exceeds 2000 characters.", file=sys.stderr)
+    if args.image_urls and len(args.image_urls) > 10:
+        print("Error: maximum 10 image URLs allowed.", file=sys.stderr)
         return 2
 
     out_file = os.path.abspath(args.out) if args.out else None
 
     payload = {
-        "model": "z-image-turbo",
+        "model": "gemini-3-pro-image-preview",
         "prompt": args.prompt,
         "size": args.size,
-        "nsfw_check": (args.nsfw_check == "true"),
+        "quality": args.quality,
     }
-    if args.seed is not None:
-        payload["seed"] = args.seed
+    if args.image_urls:
+        payload["image_urls"] = args.image_urls
 
     resp = _json_request(f"{API_BASE}/images/generations", api_key=api_key, method="POST", payload=payload)
     task_id = resp.get("id") or resp.get("task_id")
@@ -146,3 +155,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         raise SystemExit(1)
+```
