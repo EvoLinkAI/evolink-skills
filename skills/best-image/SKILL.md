@@ -21,7 +21,7 @@ Options: `--size` (auto, 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9), `
 
 If Python is unavailable:
 
-- **Windows**: `powershell -File {baseDir}/scripts/generate.ps1 -Prompt "a cute cat" -Size "auto"`
+- **Windows**: see PowerShell fallback in `{baseDir}/references/powershell.md`
 - **Unix/macOS**: use the curl fallback in `{baseDir}/references/curl_heredoc.md`
 
 ## API key

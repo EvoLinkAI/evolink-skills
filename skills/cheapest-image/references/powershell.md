@@ -1,6 +1,11 @@
+# PowerShell fallback (Windows, no Python needed)
+
+> Requires PowerShell 5.1+ (pre-installed on all Windows). Save the script below as a `.ps1` file and run with `powershell -File generate.ps1 -Prompt "a cute cat"`.
+
+```powershell
 <#
 .SYNOPSIS
-    Generate an image via Evolink Nano Banana Pro (Windows PowerShell fallback).
+    Generate an image via Evolink Z-Image-Turbo (Windows PowerShell fallback).
 .DESCRIPTION
     Zero external dependencies. Uses Invoke-RestMethod (built into PowerShell 5.1+).
     Outputs MEDIA:<path> for OpenClaw auto-attach.
@@ -8,9 +13,9 @@
 param(
     [string]$ApiKey = $env:EVOLINK_API_KEY,
     [Parameter(Mandatory)][string]$Prompt,
-    [string]$Size = "auto",
-    [string]$Quality = "2K",
-    [string[]]$ImageUrls,
+    [string]$Size = "1:1",
+    [string]$NsfwCheck = "false",
+    [Nullable[int]]$Seed,
     [string]$Out,
     [int]$PollSeconds = 10,
     [int]$MaxRetries = 72,
@@ -24,8 +29,8 @@ if (-not $ApiKey) {
     exit 2
 }
 
-if ($ImageUrls -and $ImageUrls.Count -gt 10) {
-    Write-Error "Maximum 10 image URLs allowed."
+if ($Prompt.Length -gt 2000) {
+    Write-Error "Prompt exceeds 2000 characters."
     exit 2
 }
 
@@ -41,13 +46,13 @@ $headers = @{
 }
 
 $body = @{
-    model   = "gemini-3-pro-image-preview"
-    prompt  = $Prompt
-    size    = $Size
-    quality = $Quality
+    model      = "z-image-turbo"
+    prompt     = $Prompt
+    size       = $Size
+    nsfw_check = ($NsfwCheck -eq "true")
 }
-if ($ImageUrls) {
-    $body["image_urls"] = @($ImageUrls)
+if ($null -ne $Seed) {
+    $body["seed"] = $Seed
 }
 
 $jsonBody = $body | ConvertTo-Json -Compress -Depth 5
@@ -95,7 +100,7 @@ for ($i = 1; $i -le $MaxRetries; $i++) {
         if (-not $Out) {
             $urlPath = ([System.Uri]$url).AbsolutePath
             $ext = [System.IO.Path]::GetExtension($urlPath).ToLower()
-            if ($ext -notin ".png", ".jpg", ".jpeg", ".webp") { $ext = ".png" }
+            if ($ext -notin ".png", ".jpg", ".jpeg", ".webp") { $ext = ".webp" }
             $ts = Get-Date -Format "yyyyMMdd-HHmmss-fff"
             $Out = [System.IO.Path]::GetFullPath("evolink-$ts$ext")
         }
@@ -123,3 +128,4 @@ for ($i = 1; $i -le $MaxRetries; $i++) {
 
 Write-Error "Timed out after $MaxRetries polls. Task ID: $taskId"
 exit 1
+```

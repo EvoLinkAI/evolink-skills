@@ -21,7 +21,7 @@ Options: `--size` (1:1, 2:3, 3:2, 3:4, 4:3, 9:16, 16:9, 1:2, 2:1), `--seed INT`,
 
 If Python is unavailable:
 
-- **Windows**: `powershell -File {baseDir}/scripts/generate.ps1 -Prompt "a cute cat" -Size "1:1"`
+- **Windows**: see PowerShell fallback in `{baseDir}/references/powershell.md`
 - **Unix/macOS**: use the curl fallback in `{baseDir}/references/curl_heredoc.md`
 
 ## API key
