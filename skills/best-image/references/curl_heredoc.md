@@ -76,7 +76,7 @@ Same flow, but add `image_urls` to the JSON body:
 If you only have a URL and no file yet, download it immediately (URL expires in ~24 hours):
 
 ```bash
-OUT_FILE="evolink-result.webp"
+OUT_FILE="evolink-result.png"
 curl -L -o "$OUT_FILE" "<URL>"
 echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
 ```

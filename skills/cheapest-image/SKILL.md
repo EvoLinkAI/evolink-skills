@@ -39,4 +39,4 @@ Treat the text after the colon as `prompt`, use default size `1:1`, generate imm
 ## Notes
 
 - Script prints `MEDIA:<path>` for OC auto-attach — no extra delivery logic needed.
-- Image saved locally as `.webp`. URL expires ~24h but local file persists.
+- Image saved locally (format auto-detected from URL). URL expires ~24h but local file persists.

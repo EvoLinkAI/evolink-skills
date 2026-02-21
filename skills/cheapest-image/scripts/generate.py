@@ -5,10 +5,12 @@ import argparse
 import datetime as _dt
 import json
 import os
+import posixpath
 import sys
 import time
 import urllib.error
 import urllib.request
+from urllib.parse import urlparse
 
 
 API_BASE = "https://api.evolink.ai/v1"
@@ -54,9 +56,15 @@ def _download(url: str, out_file: str, timeout_s: int = 120):
         f.write(content)
 
 
-def _default_out_file():
+def _default_out_file(ext: str = ".webp"):
     ts = _dt.datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-    return f"evolink-{ts}.webp"
+    return f"evolink-{ts}{ext}"
+
+
+def _ext_from_url(url: str) -> str:
+    path = urlparse(url).path
+    _, ext = posixpath.splitext(path)
+    return ext.lower() if ext in (".png", ".jpg", ".jpeg", ".webp") else ".webp"
 
 
 def main(argv: list[str]) -> int:
@@ -70,7 +78,7 @@ def main(argv: list[str]) -> int:
     parser.add_argument("--size", default="1:1", help="Aspect ratio (e.g. 1:1, 9:16) or custom WxH.")
     parser.add_argument("--nsfw-check", default="false", choices=["true", "false"], help="Stricter NSFW filtering.")
     parser.add_argument("--seed", type=int, default=None, help="Optional seed for reproducibility.")
-    parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.webp).")
+    parser.add_argument("--out", default=None, help="Output filename (default: evolink-<timestamp>.<ext>).")
     parser.add_argument("--poll-seconds", type=int, default=10, help="Seconds between polls.")
     parser.add_argument("--max-retries", type=int, default=72, help="Max polling attempts.")
     parser.add_argument("--verbose", action="store_true", help="Print task id and per-poll status (debug).")
@@ -85,7 +93,7 @@ def main(argv: list[str]) -> int:
         print("Error: prompt exceeds 2000 characters.", file=sys.stderr)
         return 2
 
-    out_file = os.path.abspath(args.out or _default_out_file())
+    out_file = os.path.abspath(args.out) if args.out else None
 
     payload = {
         "model": "z-image-turbo",
@@ -116,6 +124,9 @@ def main(argv: list[str]) -> int:
             if not results:
                 raise RuntimeError(f"Task completed but no results field found: {task}")
             url = results[0]
+            ext = _ext_from_url(url)
+            if not args.out:
+                out_file = os.path.abspath(_default_out_file(ext))
             _download(url, out_file=out_file)
             if args.verbose:
                 print(f"Image URL: {url}")
