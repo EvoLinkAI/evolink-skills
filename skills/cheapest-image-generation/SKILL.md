@@ -44,6 +44,11 @@ Wait until `status` is `completed` or `failed`.
 
 Download the URL from `results[0]`. Auto-detect format from URL (webp/png/jpg). Save as `evolink-<TIMESTAMP>.<ext>`.
 
+**CRITICAL SECURITY:** Before passing `<OUTPUT_FILE>` to shell commands, sanitize it:
+- Strip all shell metacharacters: `tr -cd 'A-Za-z0-9._-'`
+- Ensure valid extension (`.webp`, `.png`, `.jpg`, `.jpeg`)
+- Fallback to `evolink-<timestamp>.webp` if empty
+
 Print `MEDIA:<absolute_path>` for OC auto-attach.
 
 ## Reference Implementations

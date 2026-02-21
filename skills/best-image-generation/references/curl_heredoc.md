@@ -4,14 +4,31 @@ Run in a single shell call (avoid relying on exported variables persisting acros
 
 Replace:
 - `<API_KEY>` with the user's Evolink key
-- `<OUTPUT_FILE>` with `evolink-<TIMESTAMP>.png` (or match the actual format returned)
+- `<OUTPUT_FILE>` with `evolink-<TIMESTAMP>.png` (MUST be sanitized, see below)
 - `<USER_PROMPT>`, `<SIZE>`, `<QUALITY>`, and optionally `<IMAGE_URLS>`
+
+**SECURITY: Sanitize `<OUTPUT_FILE>` before substitution:**
+```bash
+# Strip all shell metacharacters, keep only alphanumeric, dash, underscore, dot
+SAFE_NAME=$(echo "<OUTPUT_FILE>" | tr -cd 'A-Za-z0-9._-')
+```
 
 ## Text-to-image
 
 ```bash
 API_KEY="<API_KEY>"
-OUT_FILE="<OUTPUT_FILE>"
+RAW_OUT="<OUTPUT_FILE>"
+# CRITICAL: Sanitize filename to prevent shell injection
+OUT_FILE=$(echo "$RAW_OUT" | tr -cd 'A-Za-z0-9._-')
+# Ensure it has a valid extension
+if [[ ! "$OUT_FILE" =~ \.(png|jpg|jpeg|webp)$ ]]; then
+  OUT_FILE="${OUT_FILE}.png"
+fi
+# Ensure it's not empty
+if [ -z "$OUT_FILE" ]; then
+  OUT_FILE="evolink-$(date +%s).png"
+fi
+
 PROMPT="<USER_PROMPT>"
 SIZE="<SIZE>"
 QUALITY="<QUALITY>"
@@ -53,7 +70,9 @@ for i in $(seq 1 $MAX_RETRIES); do
   if [ "$STATUS" = "completed" ]; then
     URL=$(echo "$TASK" | grep -o '"results":\["[^"]*"\]' | grep -o 'https://[^"]*')
     curl -s -o "$OUT_FILE" "$URL"
-    echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
+    # Safe path resolution (no command substitution on user input)
+    FULL_PATH="$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
+    echo "MEDIA:$FULL_PATH"
     break
   fi
   if [ "$STATUS" = "failed" ]; then
@@ -78,7 +97,17 @@ Same flow, but add `image_urls` to the JSON body:
 If you only have a URL and no file yet, download it immediately (URL expires in ~24 hours):
 
 ```bash
-OUT_FILE="evolink-result.png"
+RAW_OUT="<OUTPUT_FILE>"
+# CRITICAL: Sanitize filename
+OUT_FILE=$(echo "$RAW_OUT" | tr -cd 'A-Za-z0-9._-')
+if [[ ! "$OUT_FILE" =~ \.(png|jpg|jpeg|webp)$ ]]; then
+  OUT_FILE="${OUT_FILE}.png"
+fi
+if [ -z "$OUT_FILE" ]; then
+  OUT_FILE="evolink-result.png"
+fi
+
 curl -L -o "$OUT_FILE" "<URL>"
-echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
+FULL_PATH="$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
+echo "MEDIA:$FULL_PATH"
 ```
