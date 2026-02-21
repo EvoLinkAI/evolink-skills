@@ -41,7 +41,7 @@ for i in $(seq 1 $MAX_RETRIES); do
   STATUS=$(echo "$TASK" | grep -o '"status":"[^"]*"' | head -1 | cut -d'"' -f4)
 
   if [ "$STATUS" = "completed" ]; then
-    URL=$(echo "$TASK" | grep -o '"results":\\["[^"]*"\\]' | grep -o 'https://[^"]*')
+    URL=$(echo "$TASK" | grep -o '"results":\["[^"]*"\]' | grep -o 'https://[^"]*')
     curl -s -o "$OUT_FILE" "$URL"
     echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
     break

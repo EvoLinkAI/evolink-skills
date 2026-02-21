@@ -6,7 +6,7 @@ Run in a single shell call (avoid relying on exported variables persisting acros
 
 Replace:
 - `<API_KEY>` with the user's Evolink key
-- `<OUTPUT_FILE>` with `evolink-<TIMESTAMP>.webp`
+- `<OUTPUT_FILE>` with `evolink-<TIMESTAMP>.png` (or match the actual format returned)
 - `<USER_PROMPT>`, `<SIZE>`, `<QUALITY>`, and optionally `<IMAGE_URLS>`
 
 ## Text-to-image
