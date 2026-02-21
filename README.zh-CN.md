@@ -7,8 +7,8 @@
 ## 安装
 
 ```bash
-clawhub install cheapest-image
-clawhub install best-image
+clawhub install cheapest-image-generation
+clawhub install best-image-generation
 ```
 
 ## 配置
@@ -23,8 +23,8 @@ export EVOLINK_API_KEY="your-key"
 
 | Skill | 功能 | 价格 |
 |-------|------|------|
-| [cheapest-image](skills/cheapest-image/) | 可能是最便宜的 AI 生图 | ~¥0.026/张 |
-| [best-image](skills/best-image/) | 最高质量 AI 生图 — 文生图、图生图、图片编辑 | ~¥0.85-1.45/张 |
+| [cheapest-image-generation](skills/cheapest-image-generation/) | 可能是最便宜的 AI 生图 | ~¥0.026/张 |
+| [best-image-generation](skills/best-image-generation/) | 最高质量 AI 生图 — 文生图、图生图、图片编辑 | ~¥0.85-1.45/张 |
 
 更多 Skill 即将推出——视频、音乐、多模型路由。
 

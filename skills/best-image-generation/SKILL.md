@@ -1,5 +1,5 @@
 ---
-name: best-image
+name: best-image-generation
 description: Best quality AI image generation (~$0.12-0.20/image). Text-to-image, image-to-image, and image editing via the EvoLink API.
 homepage: https://evolink.ai
 metadata: {"openclaw": {"emoji": "🎨", "requires": {"env": ["EVOLINK_API_KEY"]}, "primaryEnv": "EVOLINK_API_KEY"}}
