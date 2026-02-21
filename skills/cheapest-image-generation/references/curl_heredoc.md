@@ -1,4 +1,4 @@
-# curl + jq (Unix/macOS, requires jq)
+# curl + bash (Unix/macOS, no dependencies)
 
 Run in a single shell call (avoid relying on exported variables persisting across tool calls).
 
@@ -14,18 +14,27 @@ PROMPT="<USER_PROMPT>"
 SIZE="<SIZE>"
 NSFW_CHECK=<true|false>
 
-JSON_BODY=$(jq -n \
-  --arg prompt "$PROMPT" \
-  --arg size "$SIZE" \
-  --argjson nsfw "$NSFW_CHECK" \
-  '{model: "z-image-turbo", prompt: $prompt, size: $size, nsfw_check: $nsfw}')
+json_escape() {
+  local s="$1"
+  s="${s//\\/\\\\}"
+  s="${s//\"/\\\"}"
+  s="${s//$'\n'/\\n}"
+  s="${s//$'\t'/\\t}"
+  s="${s//$'\r'/\\r}"
+  printf '%s' "$s"
+}
+
+PROMPT_ESC=$(json_escape "$PROMPT")
 
 RESP=$(curl -s -X POST "https://api.evolink.ai/v1/images/generations" \
   -H "Authorization: Bearer $API_KEY" \
   -H "Content-Type: application/json" \
-  -d "$JSON_BODY")
+  -d @- <<EVOLINK_END
+{"model":"z-image-turbo","prompt":"$PROMPT_ESC","size":"$SIZE","nsfw_check":$NSFW_CHECK}
+EVOLINK_END
+)
 
-TASK_ID=$(echo "$RESP" | jq -r '.id // .task_id // empty')
+TASK_ID=$(echo "$RESP" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
 
 if [ -z "$TASK_ID" ]; then
   echo "Error: Failed to submit task. Response: $RESP"
@@ -37,10 +46,10 @@ for i in $(seq 1 $MAX_RETRIES); do
   sleep 10
   TASK=$(curl -s "https://api.evolink.ai/v1/tasks/$TASK_ID" \
     -H "Authorization: Bearer $API_KEY")
-  STATUS=$(echo "$TASK" | jq -r '.status // empty')
+  STATUS=$(echo "$TASK" | grep -o '"status":"[^"]*"' | head -1 | cut -d'"' -f4)
 
   if [ "$STATUS" = "completed" ]; then
-    URL=$(echo "$TASK" | jq -r '.results[0] // empty')
+    URL=$(echo "$TASK" | grep -o '"results":\["[^"]*"\]' | grep -o 'https://[^"]*')
     curl -s -o "$OUT_FILE" "$URL"
     echo "MEDIA:$(cd "$(dirname "$OUT_FILE")" && pwd)/$(basename "$OUT_FILE")"
     break
